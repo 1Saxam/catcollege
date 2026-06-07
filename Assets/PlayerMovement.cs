@@ -2,7 +2,20 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private GameObject cageText;
+    [SerializeField] private GameObject cageObject;
+
+    private bool nearCage;
+
+
     private bool atTreeBottom;
+
+    [SerializeField] private GameObject keyObject;
+    [SerializeField] private GameObject keyIcon;
+    [SerializeField] private GameObject pickupText;
+
+    private bool nearKey;
+    private bool hasKey;
 
     public Transform treeTopLanding;
     public float moveSpeed = 5f;
@@ -63,7 +76,8 @@ public class PlayerMovement : MonoBehaviour
             );
         }
 
-        if (nearTree && Input.GetKeyDown(KeyCode.UpArrow))
+        if (nearTree &&
+   (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
         {
             isClimbing = true;
             Debug.Log("Started Climbing");
@@ -89,7 +103,9 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isClimbingMoving", false);
         }
 
-        if (isClimbing && atTreeTop && Input.GetKey(KeyCode.UpArrow))
+        if (isClimbing &&
+    atTreeTop &&
+   (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W)))
         {
             isClimbing = false;
             animator.SetBool("isClimbing", false);
@@ -99,13 +115,45 @@ public class PlayerMovement : MonoBehaviour
             transform.position = treeTopLanding.position;
         }
 
-        if (isClimbing && atTreeBottom && Input.GetKey(KeyCode.DownArrow))
+        if (isClimbing &&
+    atTreeBottom &&
+   (Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S)))
         {
             isClimbing = false;
             animator.SetBool("isClimbing", false);
             rb.gravityScale = 3;
             rb.velocity = Vector2.zero;
         }
+
+        if (nearKey &&
+            !hasKey &&
+            Input.GetKeyDown(KeyCode.E)) 
+        {
+            hasKey = true;
+
+            keyIcon.SetActive(true);
+            pickupText.SetActive(false);
+
+            Destroy(keyObject);
+           
+        
+        }
+
+
+        if (nearCage &&
+    hasKey &&
+    Input.GetKeyDown(KeyCode.G))
+        {
+            hasKey = false;
+
+            keyIcon.SetActive(false);
+            cageText.SetActive(false);
+
+            Destroy(cageObject);
+        }
+
+
+
     }
 
     void FixedUpdate()
@@ -139,6 +187,25 @@ public class PlayerMovement : MonoBehaviour
         {
             atTreeBottom = true;
         }
+
+        if (other.CompareTag("Key"))
+        {
+            nearKey = true;
+            
+            pickupText.SetActive(true);
+        }
+
+        if (other.CompareTag("Cage"))
+        {
+            nearCage = true;
+
+            if (hasKey)
+            {
+                cageText.SetActive(true);
+            }
+        }
+
+
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -159,7 +226,23 @@ public class PlayerMovement : MonoBehaviour
         {
             atTreeBottom = false;
         }
+
+        if (other.CompareTag("Key"))
+        {
+            nearKey = false;
+           
+            pickupText.SetActive(false);
+        }
+
+
+        if (other.CompareTag("Cage"))
+        {
+            nearCage = false;
+            cageText.SetActive(false);
+        }
     }
+
+
 
 
 }
