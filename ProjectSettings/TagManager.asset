@@ -9,11 +9,12 @@ TagManager:
   - TreeBottomExit
   - Key
   - Cage
+  - groundLayer
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - groundLayer
   - Water
   - UI
   - 

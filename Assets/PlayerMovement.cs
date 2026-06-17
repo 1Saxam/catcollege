@@ -1,7 +1,29 @@
 using UnityEngine;
-
+using Cinemachine;
+using System.Collections;
+using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
+
+    public float jumpForce = 10f;
+
+    public Transform groundCheck;
+    public LayerMask groundLayer;
+
+    private bool isGrounded;
+
+    public bool canMove = false;
+
+    [SerializeField] private GameObject levelCompletePanel;
+
+    [SerializeField] private GameObject playerCamera;
+    [SerializeField] private GameObject butterflyCamera;
+
+    private bool levelFinished = false;
+
+    [SerializeField] private GameObject butterflies;
+    [SerializeField] private Sprite openCageSprite;
+
     [SerializeField] private GameObject cageText;
     [SerializeField] private GameObject cageObject;
 
@@ -38,10 +60,38 @@ public class PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
 
         originalScaleX = Mathf.Abs(transform.localScale.x);
+
+        foreach (AnimatorControllerParameter p in animator.parameters)
+        {
+            Debug.Log(p.name);
+        }
     }
 
     void Update()
     {
+
+        if (!canMove)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
+        if (levelFinished)
+            return;
+
+
+        isGrounded = Physics2D.OverlapCircle(
+    groundCheck.position,
+    0.2f,
+    groundLayer
+);
+
+
+        animator.SetBool("isGrounded", isGrounded);
+
+
+
+
         if (!isClimbing)
         {
             horizontal = Input.GetAxisRaw("Horizontal");
@@ -127,7 +177,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (nearKey &&
             !hasKey &&
-            Input.GetKeyDown(KeyCode.E)) 
+            Input.GetKeyDown(KeyCode.E))
         {
             hasKey = true;
 
@@ -135,8 +185,8 @@ public class PlayerMovement : MonoBehaviour
             pickupText.SetActive(false);
 
             Destroy(keyObject);
-           
-        
+
+
         }
 
 
@@ -149,8 +199,78 @@ public class PlayerMovement : MonoBehaviour
             keyIcon.SetActive(false);
             cageText.SetActive(false);
 
-            Destroy(cageObject);
+            SpriteRenderer cageRenderer = cageObject.GetComponent<SpriteRenderer>();
+
+            cageRenderer.sprite = openCageSprite;
+            butterflies.SetActive(true);
+
+            foreach (Transform butterfly in butterflies.transform)
+            {
+                Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
+
+                rb.velocity = new Vector2(
+                    Random.Range(-2f, 0f),
+                    Random.Range(2f, 0f)
+                );
+
+
+
+                levelFinished = true;
+
+                playerCamera.GetComponent<CinemachineVirtualCamera>().Priority = 5;
+
+                butterflyCamera.GetComponent<CinemachineVirtualCamera>().Priority = 20;
+
+                StartCoroutine(ShowLevelComplete());
+
+            }
+
+
         }
+
+        if (!isClimbing &&
+    isGrounded &&
+    Input.GetKeyDown(KeyCode.Space))
+        {
+            rb.velocity = new Vector2(
+                rb.velocity.x,
+                jumpForce
+            );
+
+            animator.SetBool("isJumping", true);
+        }
+
+        if (!isGrounded)
+        {
+            if (rb.velocity.y > 0.1f)
+            {
+                animator.SetBool("isJumping", true);
+                ///animator.SetBool("isFalling", false);
+            }
+            else if (rb.velocity.y < -0.1f)
+            {
+                animator.SetBool("isJumping", false);
+               // animator.SetBool("isFalling", true);
+            }
+        }
+        else
+        {
+            animator.SetBool("isJumping", false);
+           // animator.SetBool("isFalling", false);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -191,7 +311,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Key"))
         {
             nearKey = true;
-            
+
             pickupText.SetActive(true);
         }
 
@@ -230,7 +350,7 @@ public class PlayerMovement : MonoBehaviour
         if (other.CompareTag("Key"))
         {
             nearKey = false;
-           
+
             pickupText.SetActive(false);
         }
 
@@ -242,7 +362,29 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    IEnumerator ShowLevelComplete()
+    {
+        yield return new WaitForSeconds(3f);
 
+        levelCompletePanel.SetActive(true);
+    }
+
+    public void LoadLevel2()
+    {
+        SceneManager.LoadScene("Lvl2");
+    }
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
 }
