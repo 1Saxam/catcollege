@@ -5,12 +5,7 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
 
-    public float jumpForce = 10f;
-
-    public Transform groundCheck;
-    public LayerMask groundLayer;
-
-    private bool isGrounded;
+   
 
     public bool canMove = false;
 
@@ -26,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] private GameObject cageText;
     [SerializeField] private GameObject cageObject;
+
 
     private bool nearCage;
 
@@ -77,14 +73,6 @@ public class PlayerMovement : MonoBehaviour
             return;
 
 
-        isGrounded = Physics2D.OverlapCircle(
-    groundCheck.position,
-    0.2f,
-    groundLayer
-);
-
-
-        animator.SetBool("isGrounded", isGrounded);
 
 
 
@@ -122,6 +110,9 @@ public class PlayerMovement : MonoBehaviour
                 transform.localScale.z
             );
         }
+
+
+
 
         if (nearTree &&
    (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W)))
@@ -224,29 +215,6 @@ public class PlayerMovement : MonoBehaviour
 
 
         }
-
-        if (!isClimbing &&
-    isGrounded &&
-    Input.GetKeyDown(KeyCode.Space))
-        {
-            rb.velocity = new Vector2(
-                rb.velocity.x,
-                jumpForce
-            );
-
-            animator.SetBool("isJumping", true);
-        }
-
-       
-
-
-
-
-
-
-
-
-
 
 
 
