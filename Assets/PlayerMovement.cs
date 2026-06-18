@@ -61,10 +61,7 @@ public class PlayerMovement : MonoBehaviour
 
         originalScaleX = Mathf.Abs(transform.localScale.x);
 
-        foreach (AnimatorControllerParameter p in animator.parameters)
-        {
-            Debug.Log(p.name);
-        }
+        
     }
 
     void Update()
@@ -240,24 +237,7 @@ public class PlayerMovement : MonoBehaviour
             animator.SetBool("isJumping", true);
         }
 
-        if (!isGrounded)
-        {
-            if (rb.velocity.y > 0.1f)
-            {
-                animator.SetBool("isJumping", true);
-                ///animator.SetBool("isFalling", false);
-            }
-            else if (rb.velocity.y < -0.1f)
-            {
-                animator.SetBool("isJumping", false);
-               // animator.SetBool("isFalling", true);
-            }
-        }
-        else
-        {
-            animator.SetBool("isJumping", false);
-           // animator.SetBool("isFalling", false);
-        }
+       
 
 
 
