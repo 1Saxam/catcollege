@@ -4,17 +4,18 @@ public class CrowEnemy : MonoBehaviour
 {
     public Transform player;
 
-    public float followSpeed = 3f;
-
     public float detectRange = 5f;
+    public float followSpeed = 3f;
     public float attackSpeed = 10f;
-    public float recoverSpeed = 5f;
     public float chargeTime = 0.5f;
+    public float recoverTime = 0.5f;
+
+    public float hoverHeight = 2f;
+    public float hoverDistance = 1.5f;
 
     private Animator anim;
     private SpriteRenderer sr;
 
-    private Vector2 startPos;
     private Vector2 targetPos;
 
     private enum State
@@ -34,20 +35,17 @@ public class CrowEnemy : MonoBehaviour
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
 
-        startPos = transform.position;
-
         currentState = State.Idle;
     }
 
     void Update()
     {
-        // Face the player only while idle
-        if (currentState == State.Idle)
+        // Face player
+        if (currentState != State.Dive)
         {
-            // Swap true and false if the crow faces the wrong way
             if (player.position.x > transform.position.x)
             {
-                sr.flipX = true;
+                sr.flipX = true;   // swap these if needed
             }
             else
             {
@@ -61,17 +59,25 @@ public class CrowEnemy : MonoBehaviour
 
                 anim.SetInteger("State", 0);
 
-                // Chase the player
+                // Hover beside and above player
+                float side = Mathf.Sign(transform.position.x - player.position.x);
+
+                Vector2 hoverPos = new Vector2(
+                    player.position.x + side * hoverDistance,
+                    player.position.y + hoverHeight);
+
                 transform.position = Vector2.MoveTowards(
                     transform.position,
-                    player.position,
+                    hoverPos,
                     followSpeed * Time.deltaTime);
 
-                // Start attack when close enough
+                // Attack when close enough
                 if (Vector2.Distance(transform.position, player.position) < detectRange)
                 {
                     currentState = State.Charge;
                     timer = 0f;
+
+                    // Save player's position
                     targetPos = player.position;
                 }
 
@@ -102,6 +108,7 @@ public class CrowEnemy : MonoBehaviour
                 if (Vector2.Distance(transform.position, targetPos) < 0.1f)
                 {
                     currentState = State.Recover;
+                    timer = 0f;
                 }
 
                 break;
@@ -110,12 +117,9 @@ public class CrowEnemy : MonoBehaviour
 
                 anim.SetInteger("State", 3);
 
-                transform.position = Vector2.MoveTowards(
-                    transform.position,
-                    startPos,
-                    recoverSpeed * Time.deltaTime);
+                timer += Time.deltaTime;
 
-                if (Vector2.Distance(transform.position, startPos) < 0.1f)
+                if (timer >= recoverTime)
                 {
                     currentState = State.Idle;
                 }
@@ -126,7 +130,6 @@ public class CrowEnemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Damage player only while diving
         if (currentState != State.Dive)
             return;
 
@@ -136,8 +139,8 @@ public class CrowEnemy : MonoBehaviour
         {
             playerHealth.TakeDamage();
 
-            // Immediately go back after hitting the player
             currentState = State.Recover;
+            timer = 0f;
         }
     }
 }
