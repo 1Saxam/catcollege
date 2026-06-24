@@ -18,6 +18,8 @@ public class CrowEnemy : MonoBehaviour
 
     private Vector2 targetPos;
 
+    private bool canFollowPlayer = false;
+
     private enum State
     {
         Idle,
@@ -38,6 +40,11 @@ public class CrowEnemy : MonoBehaviour
         currentState = State.Idle;
     }
 
+    public void StartFollowing()
+    {
+        canFollowPlayer = true;
+    }
+
     void Update()
     {
         // Face player
@@ -45,7 +52,7 @@ public class CrowEnemy : MonoBehaviour
         {
             if (player.position.x > transform.position.x)
             {
-                sr.flipX = true;   // swap these if needed
+                sr.flipX = true; // swap if needed
             }
             else
             {
@@ -58,6 +65,9 @@ public class CrowEnemy : MonoBehaviour
             case State.Idle:
 
                 anim.SetInteger("State", 0);
+
+                if (!canFollowPlayer)
+                    break;
 
                 // Hover beside and above player
                 float side = Mathf.Sign(transform.position.x - player.position.x);
@@ -77,7 +87,6 @@ public class CrowEnemy : MonoBehaviour
                     currentState = State.Charge;
                     timer = 0f;
 
-                    // Save player's position
                     targetPos = player.position;
                 }
 

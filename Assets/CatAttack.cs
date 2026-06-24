@@ -7,7 +7,7 @@ public class CatAttack : MonoBehaviour
 
     public float attackDuration = 0.2f;
 
-    private bool isAttacking;
+    public bool isAttacking;
 
     void Update()
     {
@@ -23,15 +23,13 @@ public class CatAttack : MonoBehaviour
 
         anim.SetTrigger("Attack");
 
-        attackPoint.SetActive(true);
 
         Invoke(nameof(EndAttack), attackDuration);
     }
 
     void EndAttack()
     {
-        attackPoint.SetActive(false);
-
         isAttacking = false;
+        Debug.Log("Attack Ended");
     }
 }

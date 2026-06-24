@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class CrowHealth : MonoBehaviour
 {
+
+    public GateController gate;
+
+
     [Header("Health")]
     public int maxHealth = 3;
     public float damageCooldown = 0.5f;
@@ -61,7 +65,10 @@ public class CrowHealth : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Crow Died!");
+        if (gate != null)
+        {
+            gate.OpenGate();
+        }
 
         Destroy(gameObject);
     }
