@@ -2410,6 +2410,7 @@ GameObject:
   - component: {fileID: 1019889720}
   - component: {fileID: 1019889722}
   - component: {fileID: 1019889723}
+  - component: {fileID: 1019889724}
   m_Layer: 0
   m_Name: Cat
   m_TagString: Untagged
@@ -2577,6 +2578,27 @@ MonoBehaviour:
   treeTopLanding: {fileID: 1262768473}
   moveSpeed: 3
   climbSpeed: 3
+--- !u!114 &1019889724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019889716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cfcb74320416184a8365255cf52b30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkClip: {fileID: 8300000, guid: e00a34a9df086674aafdeed353fc2b31, type: 3}
+  runClip: {fileID: 8300000, guid: e00a34a9df086674aafdeed353fc2b31, type: 3}
+  jumpClip: {fileID: 8300000, guid: a98ae58508fc6704cba585f9d8c3a32d, type: 3}
+  climbClip: {fileID: 8300000, guid: 98c58ad4b5ac898439616fa47e6f1dea, type: 3}
+  meowClip: {fileID: 8300000, guid: c05bd384010e96141a1f1c2367fff168, type: 3}
+  audioSource: {fileID: 0}
+  walkInterval: 0.35
+  runInterval: 0.15
+  climbInterval: 0.5
 --- !u!1 &1032126206
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ public class FootstepSound : MonoBehaviour
 
     [Header("Settings")]
     public AudioSource audioSource;
-    public float walkInterval = 0.35f;
-    public float runInterval = 0.15f;
+    public float walkInterval = 0.7f;
+    public float runInterval = 0.6f;
     public float climbInterval = 0.5f;
 
     private Rigidbody2D rb;
