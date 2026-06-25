@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FootstepSound : MonoBehaviour
+public class lvlfootstep : MonoBehaviour
 {
     [Header("Audio Clips")]
     public AudioClip walkClip;
@@ -17,10 +17,6 @@ public class FootstepSound : MonoBehaviour
     public float runInterval = 0.6f;
     public float climbInterval = 0.5f;
 
-    [Header("Ground Check (same as PlayerJump)")]
-    public Transform groundCheck;
-    public LayerMask groundLayer;
-
     private Rigidbody2D rb;
     private Animator anim;
     private float timer = 0f;
@@ -33,14 +29,6 @@ public class FootstepSound : MonoBehaviour
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
-
-        // اگر groundCheck تنظیم نشده، از GameObject خود گربه پیدا کن
-        if (groundCheck == null)
-            groundCheck = transform.Find("GroundCheck");
-
-        // اگر groundCheck پیدا نشد، خطا بده
-        if (groundCheck == null)
-            Debug.LogError("❌ GroundCheck not found! Please assign it in Inspector.");
     }
 
     void Update()
@@ -49,21 +37,7 @@ public class FootstepSound : MonoBehaviour
         bool isRunning = anim.GetBool("isRunning");
         float speed = Mathf.Abs(rb.velocity.x);
 
-        // ✅ تشخیص زمین با Physics (مستقل از doLand)
-        bool isGrounded = false;
-        if (groundCheck != null)
-        {
-            isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-        }
-
-        // اگر روی زمین نیست و در حال بالا رفتن نیست، صدا پخش نشود
-        if (!isGrounded && !isClimbing)
-        {
-            timer = 0f;
-            return;
-        }
-
-        // ===== شروع بالا رفتن =====
+        // تشخیص بالا رفتن برای پخش یک بار صدای شروع
         if (isClimbing && !wasClimbing)
         {
             wasClimbing = true;
@@ -73,7 +47,11 @@ public class FootstepSound : MonoBehaviour
         }
         if (!isClimbing) wasClimbing = false;
 
-        // ===== انتخاب صدای مناسب =====
+        // اگر روی زمین نیست و بالا نمی‌رود، صدا پخش نشود
+        bool isGrounded = !anim.GetBool("doLand"); // اگر doLand فعال باشد یعنی روی زمین است
+        if (!isGrounded && !isClimbing) { timer = 0f; return; }
+
+        // انتخاب صدای مناسب
         float currentInterval = walkInterval;
         AudioClip currentClip = walkClip;
 
@@ -87,11 +65,7 @@ public class FootstepSound : MonoBehaviour
             currentInterval = runInterval;
             currentClip = runClip != null ? runClip : walkClip;
         }
-        else if (speed < 0.1f) // ✅ آستانه‌ی کم‌تر برای تشخیص حرکت
-        {
-            timer = 0f;
-            return;
-        }
+        else if (speed < 0.5f) { timer = 0f; return; }
 
         if (currentClip == null) return;
 

@@ -15,6 +15,7 @@ public class OrbCounter : MonoBehaviour
     public void CollectOrb()
     {
         orbCount++;
+        GetComponent<FootstepSound>().PlayMeow();
         UpdateUI();
     }
 
