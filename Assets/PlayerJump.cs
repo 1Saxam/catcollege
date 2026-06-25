@@ -56,6 +56,9 @@ public class PlayerJump : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         animator.SetInteger("jumpState", 1); // cat_rise
+
+        FootstepSound footstep = GetComponent<FootstepSound>();
+        if (footstep != null) footstep.PlayJumpSound();
     }
 
     IEnumerator LandAfterDelay()
