@@ -65,11 +65,15 @@ public class CrowHealth : MonoBehaviour
 
     void Die()
     {
+        Debug.Log("Crow Disabled");
+
         if (gate != null)
         {
             gate.OpenGate();
         }
 
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+
+        Debug.Log(gameObject.activeSelf);
     }
 }
