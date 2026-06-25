@@ -2565,6 +2565,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 075a4bf38e2966545b67d12151db7782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  keyPickupSound: {fileID: 8300000, guid: c3a27675c5b8c2d4f90f60f4a3efc502, type: 3}
+  audioSource: {fileID: 1019889724}
+  gateOpenSound: {fileID: 8300000, guid: 0b972eb15cba36143a970759ca378898, type: 3}
+  butterflySound: {fileID: 8300000, guid: 1847ecce9714fee418a4f1058acb9629, type: 3}
   canMove: 0
   levelCompletePanel: {fileID: 1452127151}
   playerCamera: {fileID: 394879971}
@@ -2579,8 +2583,8 @@ MonoBehaviour:
   treeTopLanding: {fileID: 1262768473}
   moveSpeed: 3
   climbSpeed: 3
---- !u!114 &1019889724
-MonoBehaviour:
+--- !u!82 &1019889724
+AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9971,6 +9975,8 @@ PlayableDirector:
     value: {fileID: 237003127}
   - key: {fileID: 4068604870901622679, guid: b199401a690f78f4bb17d787b69bf544, type: 2}
     value: {fileID: 2091053249}
+  - key: {fileID: 915432711115454874, guid: b199401a690f78f4bb17d787b69bf544, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References:
     - 29a50f5d2795f064d8863ddf10b658fc: {fileID: 1148814354}

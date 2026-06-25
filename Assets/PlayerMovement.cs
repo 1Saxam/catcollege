@@ -5,7 +5,10 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
 
-   
+    [SerializeField] private AudioClip keyPickupSound;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip gateOpenSound;
+    [SerializeField] private AudioClip butterflySound;
 
     public bool canMove = false;
 
@@ -54,6 +57,8 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        audioSource = GetComponent<AudioSource>();
 
         originalScaleX = Mathf.Abs(transform.localScale.x);
 
@@ -169,12 +174,13 @@ public class PlayerMovement : MonoBehaviour
         {
             hasKey = true;
 
+            audioSource.PlayOneShot(keyPickupSound);
             keyIcon.SetActive(true);
             pickupText.SetActive(false);
 
             Destroy(keyObject);
 
-
+                
         }
 
 
@@ -188,8 +194,9 @@ public class PlayerMovement : MonoBehaviour
             cageText.SetActive(false);
 
             SpriteRenderer cageRenderer = cageObject.GetComponent<SpriteRenderer>();
-
+            StartCoroutine(OpenGateSequence());
             cageRenderer.sprite = openCageSprite;
+            
             butterflies.SetActive(true);
 
             foreach (Transform butterfly in butterflies.transform)
@@ -322,6 +329,33 @@ public class PlayerMovement : MonoBehaviour
         SceneManager.LoadScene("Lvl2");
     }
 
+    IEnumerator OpenGateSequence()
+    {
+        audioSource.PlayOneShot(gateOpenSound);
+
+        yield return new WaitForSeconds(2f);
+
+        audioSource.PlayOneShot(butterflySound);
+
+        butterflies.SetActive(true);
+
+        foreach (Transform butterfly in butterflies.transform)
+        {
+            Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
+
+            rb.velocity = new Vector2(
+                Random.Range(-2f, 0f),
+                Random.Range(2f, 4f)
+            );
+        }
+
+        levelFinished = true;
+
+        playerCamera.GetComponent<CinemachineVirtualCamera>().Priority = 5;
+        butterflyCamera.GetComponent<CinemachineVirtualCamera>().Priority = 20;
+
+        StartCoroutine(ShowLevelComplete());
+    }
 
 
 
@@ -332,7 +366,8 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-    
+
+
 
 
 }
