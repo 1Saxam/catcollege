@@ -1,7 +1,14 @@
 using UnityEngine;
+using System.Collections;
 
 public class CrowHealth : MonoBehaviour
 {
+
+    [Header("Game Complete")]
+    public GameObject gameCompletePanel;
+    public float panelDelay = 3f;
+
+
 
     public GateController gate;
 
@@ -65,15 +72,30 @@ public class CrowHealth : MonoBehaviour
 
     void Die()
     {
-        Debug.Log("Crow Disabled");
+        
 
         if (gate != null)
         {
             gate.OpenGate();
         }
 
+        
+
+        StartCoroutine(ShowGameComplete());
+
+
+    }
+
+    IEnumerator ShowGameComplete()
+    {
+        gameCompletePanel.SetActive(true);
+        // Stop the crow
         gameObject.SetActive(false);
 
-        Debug.Log(gameObject.activeSelf);
+        // Wait 3 seconds
+        yield return new WaitForSeconds(panelDelay);
+
+        // Show end panel
+        gameCompletePanel.SetActive(true);
     }
 }
