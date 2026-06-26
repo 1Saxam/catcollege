@@ -66,7 +66,12 @@ public class PauseManager : MonoBehaviour
     // ===== باز کردن تنظیمات صدا (دکمه Settings) =====
     public void OpenSettings()
     {
-        if (!isPaused) return; // فقط در حالت توقف باز شود
+        Debug.Log("OpenSettings called. isPaused = " + isPaused);
+        if (!isPaused)
+        {
+            Debug.Log("Not paused! Settings wont open.");
+            return;
+        }
 
         isSettingsOpen = true;
 
@@ -91,5 +96,18 @@ public class PauseManager : MonoBehaviour
         // نمایش دوباره پنل اصلی توقف
         if (pausePanel != null)
             pausePanel.SetActive(true);
+    }
+
+    // ===== رفتن به منو و ذخیره وضعیت =====
+    public void GoToMainMenu()
+    {
+        // ذخیره کن که بازی در جریان بود
+        PlayerPrefs.SetInt("HasSavedGame", 1);
+        PlayerPrefs.SetString("SavedScene",
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        PlayerPrefs.Save();
+
+        Time.timeScale = 1f;
+        UnityEngine.SceneManagement.SceneManager.LoadScene("menu");
     }
 }
