@@ -8054,9 +8054,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 747448157}
-        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
-        m_MethodName: GoToMenu
+      - m_Target: {fileID: 746737671}
+        m_TargetAssemblyTypeName: GameComplete, Assembly-CSharp
+        m_MethodName: PlayAgain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14226,6 +14226,7 @@ GameObject:
   - component: {fileID: 746737668}
   - component: {fileID: 746737670}
   - component: {fileID: 746737669}
+  - component: {fileID: 746737671}
   m_Layer: 5
   m_Name: GameCompletePanel
   m_TagString: Untagged
@@ -14293,6 +14294,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 746737667}
   m_CullTransparentMesh: 1
+--- !u!114 &746737671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746737667}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd8b5e7468e419a4fa40a64e3eed9a70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &747448125 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6947485518118508411, guid: 4e9ad801a16d6124f8fcbf64bb776b75, type: 3}
@@ -14411,17 +14424,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
---- !u!114 &747448157 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6947485518118508407, guid: 4e9ad801a16d6124f8fcbf64bb776b75, type: 3}
-  m_PrefabInstance: {fileID: 97915859}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 545442468}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 075a4bf38e2966545b67d12151db7782, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &815461693
 GameObject:
   m_ObjectHideFlags: 0
@@ -14783,7 +14785,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c6f5589de91d294a8c7dab39f4af2ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameCompletePanel: {fileID: 1269927528}
+  gameCompletePanel: {fileID: 746737667}
   panelDelay: 3
   gate: {fileID: 66193006}
   maxHealth: 3

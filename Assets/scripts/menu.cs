@@ -23,7 +23,6 @@ public class menu : MonoBehaviour
         });
 
         // --- Continue ---
-        // اگه save داریم دکمه نشون بده، وگرنه مخفی
         if (continueBtn != null)
         {
             bool hasSave = PlayerPrefs.GetInt("HasSavedGame", 0) == 1;
@@ -34,7 +33,6 @@ public class menu : MonoBehaviour
                 float savedX = PlayerPrefs.GetFloat("SavedPosX", 0f);
                 float savedY = PlayerPrefs.GetFloat("SavedPosY", 0f);
 
-                // موقعیت رو ذخیره میکنیم تا بعد از لود بخونیم
                 SceneManager.LoadScene(savedScene);
             });
         }
@@ -50,8 +48,7 @@ public class menu : MonoBehaviour
           #endif
         });
 
-        // --- Settings ---
-        // اطمینان از بسته بودن پنل در ابتدا
+        
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
         settings.onClick.AddListener(ShowSettings);
@@ -61,10 +58,10 @@ public class menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // اگر کلید Escape زده شد و پنل تنظیمات فعال است
+        
         if (Input.GetKeyDown(KeyCode.Escape) && settingsPanel != null && settingsPanel.activeSelf)
         {
-            settingsPanel.SetActive(false); // بستن پنل
+            settingsPanel.SetActive(false); 
         }
     }
 
@@ -74,7 +71,7 @@ public class menu : MonoBehaviour
             settingsPanel.SetActive(true);
     }
 
-    // متد برای بستن پنل (مثلاً به دکمه Close داخل پنل بدهید)
+    
     public void CloseSettings()
     {
         if (settingsPanel != null)
