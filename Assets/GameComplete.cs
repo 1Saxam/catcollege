@@ -5,6 +5,6 @@ public class GameComplete : MonoBehaviour
 {
     public void PlayAgain()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("menu");
     }
 }
