@@ -176,11 +176,11 @@ public class AudioManager : MonoBehaviour
         ApplyVolumes();
     }
 
-    public void PlaySFX(AudioClip clip, float pitchVariation = 0f)
+    public void PlaySFX(AudioClip clip, float pitchVariation = 0f, float volume = 1f)
     {
         if (clip == null || sfxSource == null) return;
         sfxSource.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
-        sfxSource.PlayOneShot(clip);
+        sfxSource.PlayOneShot(clip, volume);
     }
 
     void ApplyVolumes()

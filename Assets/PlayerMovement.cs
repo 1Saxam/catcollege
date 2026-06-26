@@ -62,7 +62,7 @@ public class PlayerMovement : MonoBehaviour
 
         originalScaleX = Mathf.Abs(transform.localScale.x);
 
-        
+
     }
 
     void Update()
@@ -180,7 +180,7 @@ public class PlayerMovement : MonoBehaviour
 
             Destroy(keyObject);
 
-                
+
         }
 
 
@@ -196,7 +196,7 @@ public class PlayerMovement : MonoBehaviour
             SpriteRenderer cageRenderer = cageObject.GetComponent<SpriteRenderer>();
             StartCoroutine(OpenGateSequence());
             cageRenderer.sprite = openCageSprite;
-            
+
             butterflies.SetActive(true);
 
             foreach (Transform butterfly in butterflies.transform)

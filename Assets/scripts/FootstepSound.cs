@@ -103,18 +103,18 @@ public class FootstepSound : MonoBehaviour
         }
     }
 
-    public void PlayJumpSound() { if (jumpClip != null) PlaySFX(jumpClip, 0.05f); }
+    public void PlayJumpSound() { if (jumpClip != null) PlaySFX(jumpClip, 0.05f, 5f); }
     public void PlayMeow() { if (meowClip != null) PlaySFX(meowClip, 0.05f); }
     public void PlayClimbStart() { if (climbClip != null) PlaySFX(climbClip, 0.05f); }
 
-    void PlaySFX(AudioClip clip, float pitchVariation)
+    void PlaySFX(AudioClip clip, float pitchVariation, float volume = 1f)
     {
         if (AudioManager.Instance != null)
-            AudioManager.Instance.PlaySFX(clip, pitchVariation);
+            AudioManager.Instance.PlaySFX(clip, pitchVariation, volume);
         else if (audioSource != null)
         {
             audioSource.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
-            audioSource.PlayOneShot(clip);
+            audioSource.PlayOneShot(clip, volume);
         }
     }
 }

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class menu : MonoBehaviour
 {
+    public Button continueBtn;
     public Button start;
     public Button quit;
     public Button settings;
@@ -15,9 +16,32 @@ public class menu : MonoBehaviour
     void Start()
     {
 
-        start.onClick.AddListener(() => SceneManager.LoadScene("SampleScene"));
+        // --- Start ---
+        start.onClick.AddListener(() => {
+            PlayerPrefs.SetInt("HasSavedGame", 0); // save قدیمی پاک مییشود
+            SceneManager.LoadScene("SampleScene");
+        });
+
+        // --- Continue ---
+        // اگه save داریم دکمه نشون بده، وگرنه مخفی
+        if (continueBtn != null)
+        {
+            bool hasSave = PlayerPrefs.GetInt("HasSavedGame", 0) == 1;
+            continueBtn.gameObject.SetActive(hasSave);
+
+            continueBtn.onClick.AddListener(() => {
+                string savedScene = PlayerPrefs.GetString("SavedScene", "SampleScene");
+                float savedX = PlayerPrefs.GetFloat("SavedPosX", 0f);
+                float savedY = PlayerPrefs.GetFloat("SavedPosY", 0f);
+
+                // موقعیت رو ذخیره میکنیم تا بعد از لود بخونیم
+                SceneManager.LoadScene(savedScene);
+            });
+        }
+
         quit.onClick.AddListener(() => Application.Quit());
 
+        //to exit the game in editor
         quit.onClick.AddListener(() => {
           #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
@@ -26,23 +50,11 @@ public class menu : MonoBehaviour
           #endif
         });
 
-
+        // --- Settings ---
         // اطمینان از بسته بودن پنل در ابتدا
         if (settingsPanel != null)
             settingsPanel.SetActive(false);
-
-        // اتصال دکمه Settings
         settings.onClick.AddListener(ShowSettings);
-
-
-        //start.onClick.AddListener(() =>
-        //{
-        //    SceneManager.LoadScene("main");
-        //});
-
-        //quit.onClick.AddListener(() => { 
-        //    Application.Quit();
-        //});
 
     }
 
