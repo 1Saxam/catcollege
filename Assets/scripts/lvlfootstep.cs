@@ -57,6 +57,13 @@ public class lvlfootstep : MonoBehaviour
 
         if (isClimbing)
         {
+            // ✨ اینجا باگ رو حل کردیم: اگر گربه روی درخت ایستاده، صدا نده ✨
+            if (Mathf.Abs(rb.velocity.y) < 0.1f && Mathf.Abs(rb.velocity.x) < 0.1f)
+            {
+                timer = 0f;
+                return;
+            }
+
             currentInterval = climbInterval;
             currentClip = climbClip;
         }
