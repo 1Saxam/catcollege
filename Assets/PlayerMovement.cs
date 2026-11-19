@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
     private float originalScaleX;
 
     private bool nearTree = false;
-    private bool isClimbing = false;
+    public bool isClimbing = false;
 
     public float climbSpeed = 3f;
 
