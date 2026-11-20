@@ -17,6 +17,10 @@ public class lvlfootstep : MonoBehaviour
     public float runInterval = 0.6f;
     public float climbInterval = 0.5f;
 
+    [Header("Stealth (Butterfly Companion)")]
+    public GameObject butterflyCompanion; 
+    public bool isSilent = false;
+
     private Rigidbody2D rb;
     private Animator anim;
     private float timer = 0f;
@@ -33,42 +37,57 @@ public class lvlfootstep : MonoBehaviour
 
     void Update()
     {
+        //---------------
+        // فقط وقتی دکمه شیفت رو نگه داشتی بی صدا میشی
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            isSilent = true;
+        }
+        else
+        {
+            isSilent = false;
+        }
+        //------------------
         bool isClimbing = anim.GetBool("isClimbing");
         bool isRunning = anim.GetBool("isRunning");
         float speed = Mathf.Abs(rb.velocity.x);
 
-        // تشخیص بالا رفتن برای پخش یک بار صدای شروع
+        
         if (isClimbing && !wasClimbing)
         {
             wasClimbing = true;
-            PlayClimbStart();
+            if (!isSilent) PlayClimbStart();
             timer = 0f;
             return;
         }
         if (!isClimbing) wasClimbing = false;
 
-        // اگر روی زمین نیست و بالا نمی‌رود، صدا پخش نشود
-        bool isGrounded = !anim.GetBool("doLand"); // اگر doLand فعال باشد یعنی روی زمین است
+        
+        bool isGrounded = !anim.GetBool("doLand"); 
         if (!isGrounded && !isClimbing) { timer = 0f; return; }
 
-        // انتخاب صدای مناسب
+        
         float currentInterval = walkInterval;
         AudioClip currentClip = walkClip;
 
         if (isClimbing)
         {
-            // ✨ اینجا باگ رو حل کردیم: اگر گربه روی درخت ایستاده، صدا نده ✨
+            
             if (Mathf.Abs(rb.velocity.y) < 0.1f && Mathf.Abs(rb.velocity.x) < 0.1f)
             {
                 timer = 0f;
                 return;
             }
 
+            if (isSilent) { timer = 0f; return; }
+
             currentInterval = climbInterval;
             currentClip = climbClip;
         }
         else if (isRunning && speed > 1f)
         {
+            if (isSilent) { timer = 0f; return; }
+
             currentInterval = runInterval;
             currentClip = runClip != null ? runClip : walkClip;
         }
@@ -79,7 +98,7 @@ public class lvlfootstep : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= currentInterval)
         {
-            PlaySFX(currentClip, 0.1f);
+            if (!isSilent) PlaySFX(currentClip, 0.1f);  
             timer = 0f;
         }
     }
