@@ -35,11 +35,15 @@ public class lvlfootstep : MonoBehaviour
         audioSource.playOnAwake = false;
     }
 
-    void Update()
+        void Update()
     {
+        bool isClimbing = anim.GetBool("isClimbing");
+        bool isRunning = anim.GetBool("isRunning");
+        float speed = Mathf.Abs(rb.velocity.x);
+
         //---------------
-        // فقط وقتی دکمه شیفت رو نگه داشتی بی صدا میشی
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        // ✨ فقط وقتی روی درخت هستی و شیفت رو نگه داشتی بی صدا میشی ✨
+        if (isClimbing && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)))
         {
             isSilent = true;
         }
@@ -48,10 +52,6 @@ public class lvlfootstep : MonoBehaviour
             isSilent = false;
         }
         //------------------
-        bool isClimbing = anim.GetBool("isClimbing");
-        bool isRunning = anim.GetBool("isRunning");
-        float speed = Mathf.Abs(rb.velocity.x);
-
         
         if (isClimbing && !wasClimbing)
         {
