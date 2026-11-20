@@ -51,12 +51,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Climbing Settings")]
     public float climbHorizontalSpeed = 2f;
-    // این عدد یعنی گربه چقدر میتونه از وسط تنه به چپ و راست بره (مثلاً 1.5 واحد)
     public float maxClimbOffset = 1.5f;
 
     private float treeCenterX;
-
-    // متغیرهای داخلی برای محاسبه خودکار مرزها
     private float currentMinX;
     private float currentMaxX;
 
@@ -121,10 +118,8 @@ public class PlayerMovement : MonoBehaviour
             else if (climbHorizontal < 0)
                 transform.localScale = new Vector3(-originalScaleX, transform.localScale.y, transform.localScale.z);
 
-            // حرکت همزمان
             rb.velocity = new Vector2(climbHorizontal * climbHorizontalSpeed, vertical * climbSpeed);
 
-            // اعمال محدودیت با مقادیری که خودکار حساب کردیم
             float clampedX = Mathf.Clamp(rb.position.x, currentMinX, currentMaxX);
             rb.position = new Vector2(clampedX, rb.position.y);
         }
@@ -167,37 +162,27 @@ public class PlayerMovement : MonoBehaviour
             keyIcon.SetActive(false);
             cageText.SetActive(false);
             SpriteRenderer cageRenderer = cageObject.GetComponent<SpriteRenderer>();
+
             StartCoroutine(OpenGateSequence());
             cageRenderer.sprite = openCageSprite;
-
-            butterflies.SetActive(true);
-            foreach (Transform butterfly in butterflies.transform)
-            {
-                Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
-                rb.velocity = new Vector2(Random.Range(-2f, 0f), Random.Range(2f, 0f));
-
-                levelFinished = true;
-                playerCamera.GetComponent<CinemachineVirtualCamera>().Priority = 5;
-                butterflyCamera.GetComponent<CinemachineVirtualCamera>().Priority = 20;
-                StartCoroutine(ShowLevelComplete());
-            }
         }
     }
 
-    // ---------- KNOCKBACK (used when the bat bites) ----------
     private float knockbackTimer;
     public bool IsKnockedBack => knockbackTimer > 0f;
 
     public void ApplyKnockback(Vector2 pushVelocity, float duration)
     {
-        if (isClimbing) return;          // don't fling the cat off the tree
+        if (isClimbing) return;
         knockbackTimer = duration;
         rb.velocity = pushVelocity;
     }
 
     void FixedUpdate()
     {
-        // While being pushed, don't let the player's input override the push
+        // جلوگیری از جنگیدن فیزیک بازی با کات‌سین
+        if (!canMove || levelFinished) return;
+
         if (knockbackTimer > 0f)
         {
             knockbackTimer -= Time.fixedDeltaTime;
@@ -219,7 +204,6 @@ public class PlayerMovement : MonoBehaviour
             nearTree = true;
             treeCenterX = other.bounds.center.x;
         }
-
 
         if (other.CompareTag("TreeTopExit")) atTreeTop = true;
         if (other.CompareTag("TreeBottomExit")) atTreeBottom = true;
@@ -279,7 +263,6 @@ public class PlayerMovement : MonoBehaviour
 
             bool companionAssigned = false;
 
-            // ۱. پیدا کردن و آماده‌سازی پروانه‌ی همراه
             foreach (Transform butterfly in butterflies.transform)
             {
                 if (!companionAssigned)
@@ -303,17 +286,14 @@ public class PlayerMovement : MonoBehaviour
                     comp.heightOffset = 2.5f;
                     comp.enabled = true;
 
-                    break; // فقط روی یکی انجام بده
+                    break;
                 }
             }
 
-            // ✨ ۲. مکث می‌کنیم تا بازیکن ببینه پروانه داره میاد بالای سر گربه ✨
             yield return new WaitForSeconds(2f);
 
-            // ۳. حالا بقیه پروانه‌ها پرواز می‌کنن
             foreach (Transform butterfly in butterflies.transform)
             {
-                // اگه این پروانه، همون همراه هستش، کاری بهش نداشته باش
                 if (butterfly.GetComponent<ButterflyCompanion>() != null) continue;
 
                 Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
@@ -323,12 +303,14 @@ public class PlayerMovement : MonoBehaviour
                 }
             }
 
-            // ✨ ۴. حالا که پروانه همراه بالای سر گربه نشسته، دوربین میره بالا ✨
             levelFinished = true;
             playerCamera.GetComponent<CinemachineVirtualCamera>().Priority = 5;
             butterflyCamera.GetComponent<CinemachineVirtualCamera>().Priority = 20;
 
-            StartCoroutine(ShowLevelComplete());
+            // پنل مرحله تموم شد کامنت شده تا روی کات‌سین نیاد
+            // StartCoroutine(ShowLevelComplete());
+
+            FindObjectOfType<BatCinematic>().StartCinematic();
         }
     }
 }
