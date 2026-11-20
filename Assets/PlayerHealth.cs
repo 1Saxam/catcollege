@@ -84,6 +84,7 @@ public class PlayerHealth : MonoBehaviour
 
         SpawnBleed(hitFrom);
         UpdateHearts();
+        PlaySound(hurtSound);   // plays every time a heart is lost (including the last one)
 
         Debug.Log("Lives Left: " + lives);
 
@@ -92,14 +93,13 @@ public class PlayerHealth : MonoBehaviour
             movement.canMove = false;
             rb.velocity = Vector2.zero;
 
-            PlaySound(deathSound);
+            PlaySound(deathSound);   // optional extra sound on the last heart
             SetTrigger(deathTrigger);
 
             Invoke(nameof(ShowGameOver), gameOverDelay);
             return true;
         }
 
-        PlaySound(hurtSound);
         SetTrigger(hurtTrigger);
 
         if (movement != null && push != Vector2.zero)

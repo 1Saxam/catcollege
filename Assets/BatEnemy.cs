@@ -69,6 +69,7 @@ public class BatEnemy : MonoBehaviour
     public string deathStateName = "Death";
 
     public bool IsDead => isDead;
+    public int CurrentHealth => health;
 
     Rigidbody2D rb;
     Animator anim;
