@@ -252,20 +252,65 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator OpenGateSequence()
     {
         audioSource.PlayOneShot(gateOpenSound);
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
         audioSource.PlayOneShot(butterflySound);
 
-        butterflies.SetActive(true);
-        foreach (Transform butterfly in butterflies.transform)
+        if (butterflies != null)
         {
-            Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
-            rb.velocity = new Vector2(Random.Range(-2f, 0f), Random.Range(2f, 4f));
+            butterflies.SetActive(true);
+
+            bool companionAssigned = false;
+
+            // ۱. پیدا کردن و آماده‌سازی پروانه‌ی همراه
+            foreach (Transform butterfly in butterflies.transform)
+            {
+                if (!companionAssigned)
+                {
+                    companionAssigned = true;
+
+                    Animator anim = butterfly.GetComponent<Animator>();
+                    if (anim != null) anim.enabled = false;
+
+                    Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
+                    if (rb != null)
+                    {
+                        rb.velocity = Vector2.zero;
+                        rb.bodyType = RigidbodyType2D.Kinematic;
+                    }
+
+                    ButterflyCompanion comp = butterfly.GetComponent<ButterflyCompanion>();
+                    if (comp == null) comp = butterfly.gameObject.AddComponent<ButterflyCompanion>();
+
+                    comp.target = this.transform;
+                    comp.heightOffset = 2.5f;
+                    comp.enabled = true;
+
+                    break; // فقط روی یکی انجام بده
+                }
+            }
+
+            // ✨ ۲. مکث می‌کنیم تا بازیکن ببینه پروانه داره میاد بالای سر گربه ✨
+            yield return new WaitForSeconds(2f);
+
+            // ۳. حالا بقیه پروانه‌ها پرواز می‌کنن
+            foreach (Transform butterfly in butterflies.transform)
+            {
+                // اگه این پروانه، همون همراه هستش، کاری بهش نداشته باش
+                if (butterfly.GetComponent<ButterflyCompanion>() != null) continue;
+
+                Rigidbody2D rb = butterfly.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.velocity = new Vector2(Random.Range(-2f, 2f), Random.Range(2f, 4f));
+                }
+            }
+
+            // ✨ ۴. حالا که پروانه همراه بالای سر گربه نشسته، دوربین میره بالا ✨
+            levelFinished = true;
+            playerCamera.GetComponent<CinemachineVirtualCamera>().Priority = 5;
+            butterflyCamera.GetComponent<CinemachineVirtualCamera>().Priority = 20;
+
+            StartCoroutine(ShowLevelComplete());
         }
-
-        levelFinished = true;
-        playerCamera.GetComponent<CinemachineVirtualCamera>().Priority = 5;
-        butterflyCamera.GetComponent<CinemachineVirtualCamera>().Priority = 20;
-
-        StartCoroutine(ShowLevelComplete());
     }
 }
