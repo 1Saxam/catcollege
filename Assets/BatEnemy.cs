@@ -316,7 +316,7 @@ public class BatEnemy : MonoBehaviour
         StopAllCoroutines();
         Log("Dead");
 
-        PlayOneShotAnim(deathTrigger);
+        PlayDeathAnim();
         PlaySound(deathSound);
 
         foreach (Collider2D c in GetComponentsInChildren<Collider2D>())
@@ -325,28 +325,56 @@ public class BatEnemy : MonoBehaviour
         StartCoroutine(DeathRoutine());
     }
 
+    // Jump straight into the Death state (doesn't depend on Any State arrows / triggers)
+    void PlayDeathAnim()
+    {
+        if (anim == null) { Log("No Animator on the bat!"); return; }
+
+        // Clear every trigger so nothing (Stuned, Attack, Move) pulls the bat out of Death
+        foreach (var p in anim.parameters)
+            if (p.type == AnimatorControllerParameterType.Trigger)
+                anim.ResetTrigger(p.name);
+
+        int deathHash = Animator.StringToHash(deathStateName);
+        if (anim.HasState(0, deathHash))
+        {
+            anim.Play(deathHash, 0, 0f);
+            Log("Playing Death animation");
+        }
+        else
+        {
+            Log("No state called '" + deathStateName + "' in Base Layer! Using trigger instead.");
+            SetTrigger(deathTrigger);
+        }
+    }
+
     // Your animator has Death -> Idle, so freeze on the last Death frame instead.
     IEnumerator DeathRoutine()
     {
         if (anim != null)
         {
-            float t = 0f;
-            while (t < 1f && !anim.GetCurrentAnimatorStateInfo(0).IsName(deathStateName))
-            {
-                t += Time.deltaTime;
-                yield return null;
-            }
+            yield return null; // let Play() take effect
 
-            t = 0f;
+            float t = 0f;
             while (t < 5f)
             {
                 AnimatorStateInfo info = anim.GetCurrentAnimatorStateInfo(0);
-                if (!info.IsName(deathStateName) || anim.IsInTransition(0) || info.normalizedTime >= 0.98f)
+                bool inDeath = info.IsName(deathStateName);
+
+                if (inDeath && (anim.IsInTransition(0) || info.normalizedTime >= 0.98f))
                     break;
+
+                if (!inDeath && t > 0.2f)
+                {
+                    Log("Something pulled the bat OUT of Death (check Any State arrows with no condition)");
+                    break;
+                }
+
                 t += Time.deltaTime;
                 yield return null;
             }
 
+            Log("Death animation finished, freezing last frame");
             anim.enabled = false;
         }
 
