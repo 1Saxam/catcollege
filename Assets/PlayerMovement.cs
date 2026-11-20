@@ -184,8 +184,26 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // ---------- KNOCKBACK (used when the bat bites) ----------
+    private float knockbackTimer;
+    public bool IsKnockedBack => knockbackTimer > 0f;
+
+    public void ApplyKnockback(Vector2 pushVelocity, float duration)
+    {
+        if (isClimbing) return;          // don't fling the cat off the tree
+        knockbackTimer = duration;
+        rb.velocity = pushVelocity;
+    }
+
     void FixedUpdate()
     {
+        // While being pushed, don't let the player's input override the push
+        if (knockbackTimer > 0f)
+        {
+            knockbackTimer -= Time.fixedDeltaTime;
+            return;
+        }
+
         if (isClimbing) return;
 
         float currentSpeed = moveSpeed;
