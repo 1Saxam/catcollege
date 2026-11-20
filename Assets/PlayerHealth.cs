@@ -35,7 +35,7 @@ public class PlayerHealth : MonoBehaviour
     private PlayerMovement movement;
     private Rigidbody2D rb;
     private Collider2D bodyCollider;
-    private DamageFlash damageFlash;
+    
     private readonly HashSet<string> animParams = new HashSet<string>();
 
     void Start()
@@ -43,7 +43,7 @@ public class PlayerHealth : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         rb = GetComponent<Rigidbody2D>();
         bodyCollider = GetComponent<Collider2D>();
-        damageFlash = GetComponent<DamageFlash>();
+        
 
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
         if (animator == null) animator = GetComponent<Animator>();
@@ -80,8 +80,7 @@ public class PlayerHealth : MonoBehaviour
 
         lives--;
 
-        if (damageFlash != null)
-            damageFlash.Flash();
+        
 
         SpawnBleed(hitFrom);
         UpdateHearts();

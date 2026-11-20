@@ -7287,7 +7287,7 @@ Transform:
   m_GameObject: {fileID: 316366645}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9, y: -41.3, z: -10.038669}
+  m_LocalPosition: {x: -27.21, y: -1.7, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14643,6 +14643,16 @@ MonoBehaviour:
   damageCooldown: 1
   lives: 3
   gameOverPanel: {fileID: 604509224}
+  gameOverDelay: 1
+  bleedEffectPrefab: {fileID: 0}
+  bleedLifetime: 1.5
+  audioSource: {fileID: 0}
+  hurtSound: {fileID: 0}
+  deathSound: {fileID: 0}
+  animator: {fileID: 0}
+  hurtTrigger: Hurt
+  deathTrigger: Death
+  knockbackTime: 0.25
 --- !u!114 &747448138
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14736,6 +14746,7 @@ GameObject:
   - component: {fileID: 769346444}
   - component: {fileID: 769346446}
   - component: {fileID: 769346445}
+  - component: {fileID: 769346447}
   m_Layer: 6
   m_Name: BatAttack
   m_TagString: Untagged
@@ -14846,6 +14857,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &769346447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 769346443}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ae64de66b98f6419229a7db84b960c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &815461693
 GameObject:
   m_ObjectHideFlags: 0
@@ -28588,6 +28611,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 304f11f14b133a94497e5f5f77291c2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 747448125}
+  attackHitbox: {fileID: 769346447}
+  audioSource: {fileID: 1812242310}
+  showDebugLogs: 1
+  maxHealth: 2
+  invulnerableTime: 0.1
+  hurtStunTime: 0.35
+  knockbackSpeed: 4
+  corpseStayTime: 0.5
+  moveSpeed: 2.5
+  detectRange: 6
+  loseRange: 9
+  hoverAbovePlayer: 0.3
+  hoverSideDistance: 1.2
+  bobHeight: 0.15
+  bobSpeed: 3
+  artLooksRight: 0
+  turnDeadZone: 0.25
+  attackRange: 1.1
+  attackCooldown: 1.5
+  attackWindup: 0.25
+  lungeSpeed: 9
+  attackActiveTime: 0.15
+  attackRecovery: 0.3
+  bitePoint: {x: 0.6, y: 0}
+  biteRadius: 0.5
+  pushBackForce: 7
+  pushUpForce: 4
+  attackSound: {fileID: 0}
+  hurtSound: {fileID: 0}
+  deathSound: {fileID: 0}
+  moveTrigger: MoveTrigger
+  attackTrigger: Attack
+  stunedTrigger: StunedTrigger
+  deathTrigger: Death
+  idleStateName: Idle
+  deathStateName: Death
 --- !u!61 &1812242312
 BoxCollider2D:
   m_ObjectHideFlags: 0
